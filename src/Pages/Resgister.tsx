@@ -1,12 +1,13 @@
 import React from "react";
 import { Button, TextInput, PasswordInput, SegmentedControl } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { Link } from "react-router-dom";
+import { data, Link } from "react-router-dom";
+import { registerUser } from "../Service/USerService";
 
 // ✅ Define the type for form values
 interface RegisterFormValues {
   name:string;
-  type: "PATEINT" | "DOCTOR" | "ADMIN";
+  role: "PATIENT" | "DOCTOR" | "ADMIN";
   email: string;
   password: string;
   confirmPassword: string;
@@ -16,7 +17,7 @@ const Register = () => {
   const form = useForm<RegisterFormValues>({
     initialValues: {
       name:"",
-      type: "PATEINT",
+      role: "PATIENT",
       email: "",
       password: "",
       confirmPassword: "",
@@ -36,7 +37,12 @@ const Register = () => {
   });
 
   const handleSubmit = (values: RegisterFormValues) => {
-    console.log(values);
+    registerUser(values).then((data)=>{
+        console.log(data);
+    }).catch((err)=>{
+        console.log(err);
+    })
+  
   };
 
   return (
@@ -54,14 +60,14 @@ const Register = () => {
           </div>
 
           <SegmentedControl
-            {...form.getInputProps("type")}
+            {...form.getInputProps("role")}
             fullWidth
             size="md"
             radius="md"
             color="blue"
             bg="none"
             className="[&_*]:!text-white border border-gray-300 rounded-md px-3 py-1"
-            data={[{label:'Patient',value:'PATEINT'},{label:'Doctor',value:'DOCTOR'},{label:'Admin',value:'ADMIN'}]}
+            data={[{label:'Patient',value:'PATIENT'},{label:'Doctor',value:'DOCTOR'},{label:'Admin',value:'ADMIN'}]}
           />
           <TextInput
             variant="unstyled"
