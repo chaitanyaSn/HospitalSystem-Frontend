@@ -10,6 +10,7 @@ import {
 import React from 'react'
 import { Avatar } from '@mantine/core'
 import { NavLink } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 const links = [
   { name: 'Dashboard', url: '/dashboard', icon: <IconLayoutGrid size={20} stroke={1.5}/> },
@@ -21,6 +22,7 @@ const links = [
 ]
 
 const Sidebar = () => {
+    const user=useSelector((state:any)=>state.user);
   return (
     <div className='flex'>
       <div className='w-64'>
@@ -41,7 +43,8 @@ const Sidebar = () => {
         <div className='bg-white rounded-full p-1 shadow-xl'>
           <Avatar variant='filled' size="xl" src="avatar.png" alt="it's me" />
         </div>
-        <span className='text-2xl font-medium text-light'>Chaitanya</span>
+        <span className='text-2xl font-medium text-light'>{user.name}</span>
+        <span className='text-sm font-light text-light'>{user.role}</span>
       </div>
 
       {/* Links */}

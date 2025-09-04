@@ -8,13 +8,15 @@ import {
   IconTrash,
   IconArrowsLeftRight,
 } from '@tabler/icons-react';
+import { useSelector } from 'react-redux';
 
 const ProfileMenu=()=> {
+    const user=useSelector((state:any)=>state.user);
   return (
     <Menu shadow="md" width={200}>
       <Menu.Target>
        <div className='flex items-center gap-3 cursor-pointer'>
-        <span className='font-bold text-lg text-neutral-900'>Chaitanya</span>
+        <span className='font-bold text-lg text-neutral-900'>{user.name}</span>
         <Avatar variant='filled' src="avatar.png" alt="it's me" />
        </div>
       </Menu.Target>

@@ -1,9 +1,17 @@
-import React from "react";
+import React, { use } from "react";
 import { Button, TextInput } from "@mantine/core";
 import { PasswordInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { loginUser } from "../Service/USerService";
+import { errorNotification, successNotification } from "../Util/NotificationUtil";
+import { useDispatch } from "react-redux";
+import { setJwt } from "../Slices/JwtSlices";
+import { jwtDecode } from "jwt-decode";
+import { setUser } from "../Slices/UserSlice";
 const Login = () => {
+  const dispatch=useDispatch();
+  const navigate=useNavigate();
   const form = useForm({
     initialValues: {
       email: "",
@@ -15,7 +23,17 @@ const Login = () => {
     },
   });
   const handleSubmit = (values: typeof form.values) => {
-    console.log(values);
+    loginUser(values).then((_data) => {
+console.log("Login Response:", _data);
+console.log(jwtDecode(_data));
+      successNotification("Login successful");
+      dispatch(setJwt(_data));
+      dispatch(setUser(jwtDecode(_data)));
+      navigate("/");
+    }).catch((err) => {
+      console.log(err);
+      errorNotification("Login failed");
+    });
   };
   return (
     <div

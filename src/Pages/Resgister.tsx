@@ -1,8 +1,10 @@
-import React from "react";
+import React, { use } from "react";
 import { Button, TextInput, PasswordInput, SegmentedControl } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { data, Link } from "react-router-dom";
+import { data, Link, useNavigate } from "react-router-dom";
 import { registerUser } from "../Service/USerService";
+import { errorNotification, successNotification } from "../Util/NotificationUtil";
+import { error } from "console";
 
 // ✅ Define the type for form values
 interface RegisterFormValues {
@@ -14,6 +16,7 @@ interface RegisterFormValues {
 }
 
 const Register = () => {
+  const navigate=useNavigate();
   const form = useForm<RegisterFormValues>({
     initialValues: {
       name:"",
@@ -38,8 +41,10 @@ const Register = () => {
 
   const handleSubmit = (values: RegisterFormValues) => {
     registerUser(values).then((data)=>{
-        console.log(data);
+        successNotification("Registration Successful ! Please Login to Continue");
+        navigate('/login');
     }).catch((err)=>{
+      errorNotification("Registration Failed ! Something went wrong");
         console.log(err);
     })
   
