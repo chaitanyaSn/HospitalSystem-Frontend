@@ -5,6 +5,9 @@ import Home from '../Pages/Home'
 import Dashboard from '../Pages/Dashboard'
 import Login from '../Pages/Login'
 import Resgister from '../Pages/Resgister'
+import PublicRoute from './PublicRoute'
+import ProtectedRoute from './ProtectedRoute'
+import PatientDashboard from '../Layout/PatientDashboard'
 
 // Layout with Sidebar + Header
 const Layout = () => {
@@ -24,14 +27,22 @@ const AppRoutes = () => {
     <BrowserRouter>
       <Routes>
         {/* Login page without layout */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Resgister />} />
+        <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+        <Route path="/register" element={<PublicRoute><Resgister /></PublicRoute>} />
 
         {/* Routes with layout */}
-        <Route element={<Layout />}>
-          <Route path="/" element={<Home />} />
+         <Route path='/' element={<ProtectedRoute><Layout /></ProtectedRoute>}>
           <Route path="/dashboard" element={<Dashboard />} />
         </Route>
+
+          <Route path='/patient' element={<ProtectedRoute><PatientDashboard /></ProtectedRoute>}>
+          <Route path="profile" element={<Dashboard />} />
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="appointment" element={<Dashboard />} />
+          <Route path="book" element={<Dashboard />} />
+          
+        </Route>
+
       </Routes>
     </BrowserRouter>
   )
