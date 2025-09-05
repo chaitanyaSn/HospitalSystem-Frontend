@@ -8,6 +8,7 @@ import Resgister from '../Pages/Resgister'
 import PublicRoute from './PublicRoute'
 import ProtectedRoute from './ProtectedRoute'
 import PatientDashboard from '../Layout/PatientDashboard'
+import PatientProfile from '../Pages/Patient/PatientProfile'
 
 // Layout with Sidebar + Header
 const Layout = () => {
@@ -36,11 +37,11 @@ const AppRoutes = () => {
         </Route>
 
           <Route path='/patient' element={<ProtectedRoute><PatientDashboard /></ProtectedRoute>}>
-          <Route path="profile" element={<Dashboard />} />
+          <Route path="profile" element={<PatientProfile />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="appointment" element={<Dashboard />} />
           <Route path="book" element={<Dashboard />} />
-          
+
         </Route>
 
       </Routes>
