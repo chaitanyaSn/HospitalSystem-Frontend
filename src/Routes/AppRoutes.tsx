@@ -1,7 +1,5 @@
-import Sidebar from '../Components/Sidebar/Sidebar'
-import Header from '../Components/Header/Header'
-import { BrowserRouter, Route, Routes, Outlet } from 'react-router-dom'
-import Home from '../Pages/Home'
+
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Dashboard from '../Pages/Dashboard'
 import Login from '../Pages/Login'
 import Resgister from '../Pages/Resgister'
@@ -9,19 +7,9 @@ import PublicRoute from './PublicRoute'
 import ProtectedRoute from './ProtectedRoute'
 import PatientDashboard from '../Layout/PatientDashboard'
 import PatientProfile from '../Pages/Patient/PatientProfile'
+import AdminDashboard from '../Layout/AdminDashboard'
+import DoctorDashboard from '../Layout/DoctorDashboard'
 
-// Layout with Sidebar + Header
-const Layout = () => {
-  return (
-    <div className="flex">
-      <Sidebar />
-      <div className="w-full">
-        <Header />
-        <Outlet /> {/* This is where nested routes render */}
-      </div>
-    </div>
-  )
-}
 
 const AppRoutes = () => {
   return (
@@ -32,17 +20,23 @@ const AppRoutes = () => {
         <Route path="/register" element={<PublicRoute><Resgister /></PublicRoute>} />
 
         {/* Routes with layout */}
-         <Route path='/' element={<ProtectedRoute><Layout /></ProtectedRoute>}>
+         <Route path='/' element={<ProtectedRoute><AdminDashboard/></ProtectedRoute>}>
           <Route path="/dashboard" element={<Dashboard />} />
-        </Route>
+         </Route>
 
           <Route path='/patient' element={<ProtectedRoute><PatientDashboard /></ProtectedRoute>}>
           <Route path="profile" element={<PatientProfile />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="appointment" element={<Dashboard />} />
           <Route path="book" element={<Dashboard />} />
+          </Route>
 
-        </Route>
+          <Route path='/doctor' element={<ProtectedRoute><DoctorDashboard /></ProtectedRoute>}>
+          <Route path="profile" element={<PatientProfile />} />
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="appointment" element={<Dashboard />} />
+          <Route path="book" element={<Dashboard />} />
+          </Route>
 
       </Routes>
     </BrowserRouter>

@@ -21,6 +21,7 @@
     "@types/react": "^19.1.12",
     "@types/react-dom": "^19.1.9",
     "axios": "^1.11.0",
+    "date-fns": "^4.1.0",
     "dayjs": "^1.11.18",
     "jwt-decode": "^4.0.0",
     "react": "^19.1.1",

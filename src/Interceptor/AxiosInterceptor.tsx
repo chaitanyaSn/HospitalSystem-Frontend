@@ -1,5 +1,5 @@
 import axios, { InternalAxiosRequestConfig } from "axios";
-import exp from "constants";
+
 
 const axiosInstance = axios.create({
     baseURL: "http://localhost:9000",
@@ -7,8 +7,12 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
     (config:InternalAxiosRequestConfig) => {
-        console.log("Request Interceptor:", config);
+        const token = localStorage.getItem("token");
+        if (token && config.headers) {
+            config.headers["Authorization"] = `Bearer ${token}`;
+        }
         return config;
+            
     }
 );
 export default axiosInstance;
