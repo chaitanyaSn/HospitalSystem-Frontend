@@ -1,11 +1,13 @@
 import React from 'react'
 import '@mantine/core/styles.css';
+import '@mantine/dates/styles.css';
 import '@mantine/notifications/styles.css';
 import { Notifications } from '@mantine/notifications';
 import { MantineProvider } from '@mantine/core';
 import AppRoutes from './Routes/AppRoutes';
 import { Provider } from 'react-redux';
 import Store from './Store';
+import { PrimeReactProvider } from 'primereact/api';
 const App = () => {
   return (
     <Provider store={Store}>
@@ -21,8 +23,10 @@ const App = () => {
     }
     }}
     >
+      <PrimeReactProvider>
       <Notifications position='top-center'/>
     <AppRoutes/>
+    </PrimeReactProvider>
     </MantineProvider>
 </Provider>
   )

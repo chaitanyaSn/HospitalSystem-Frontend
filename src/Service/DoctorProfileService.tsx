@@ -12,4 +12,10 @@ const updateDoctor = async (id: any, doctor: any) => {
     .catch((err) => {throw err})
 
 }
-export {getDoctor,updateDoctor}
+const getDoctorDropDown = async () => {
+    return axiosInstance.get('/profile/doctor/dropdown')
+    .then((res) => res.data)
+    .catch((err) => {throw err})
+
+}
+export {getDoctor,updateDoctor,getDoctorDropDown}
