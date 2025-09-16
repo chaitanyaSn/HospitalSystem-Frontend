@@ -30,4 +30,20 @@ const getAppointmentsDetailsWithName = async (id:any) => {
     .catch((err) => {throw err})
 
 }
-export {getAppointmentDetails,scheduleAppointment,cancelAppointment,getAppointmentsDetailsWithName,completeAppointment}
+const getAppointmentsByPatient = async (id:any) => {
+    return axiosInstance.get('/appointments/getAllByPatient/'+id)
+    .then((res) => res.data)
+    .catch((err) => {throw err})
+
+}
+
+const getAppointmentsByDoctor = async (id:any) => {
+    return axiosInstance.get('/appointments/getAllByDoctor/'+id)
+    .then((res) => res.data)
+    .catch((err) => {throw err})
+
+}
+
+
+
+export {getAppointmentDetails,scheduleAppointment,cancelAppointment,getAppointmentsDetailsWithName,completeAppointment,getAppointmentsByPatient,getAppointmentsByDoctor}

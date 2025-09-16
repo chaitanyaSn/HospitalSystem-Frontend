@@ -14,8 +14,7 @@ import { useSelector } from 'react-redux'
 
 const links = [
   { name: 'Dashboard', url: '/doctor/dashboard', icon: <IconLayoutGrid size={20} stroke={1.5}/> },
-  { name: 'Patients', url: '/doctor/patient', icon: <IconManFilled size={20} stroke={1.5}/> },
-  { name: 'Doctors', url: '/doctor/doctor', icon: <IconStethoscope size={20} stroke={1.5}/> },
+  { name: 'Doctors', url: '/doctor/profile', icon: <IconStethoscope size={20} stroke={1.5}/> },
   { name: 'Appointments', url: '/doctor/appointment', icon: <IconCalendarSearch size={20} stroke={1.5}/> },
   { name: 'Pharmacy', url: '/doctor/pharmacy', icon: <IconVaccine size={20} stroke={1.5}/> },
   { name: 'Settings', url: '/doctor/settings', icon: <IconSettings size={20} stroke={1.5}/> },

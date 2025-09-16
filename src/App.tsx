@@ -8,6 +8,7 @@ import AppRoutes from './Routes/AppRoutes';
 import { Provider } from 'react-redux';
 import Store from './Store';
 import { PrimeReactProvider } from 'primereact/api';
+import { ModalsProvider } from '@mantine/modals';
 const App = () => {
   return (
     <Provider store={Store}>
@@ -23,10 +24,12 @@ const App = () => {
     }
     }}
     >
+      <ModalsProvider>
       <PrimeReactProvider>
       <Notifications position='top-center'/>
     <AppRoutes/>
     </PrimeReactProvider>
+    </ModalsProvider>
     </MantineProvider>
 </Provider>
   )

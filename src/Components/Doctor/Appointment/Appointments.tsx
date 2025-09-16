@@ -2,24 +2,20 @@ import React, { useState, useEffect } from "react";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { DataTable, DataTableFilterMeta } from "primereact/datatable";
 import { Column, ColumnFilterElementTemplateOptions } from "primereact/column";
-import { useDisclosure } from "@mantine/hooks";
+
 import { format } from "date-fns"; // Correct import
 import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
 
 import { Calendar } from "primereact/calendar";
 
 import { Tag } from "primereact/tag";
-import { ActionIcon, Button, LoadingOverlay, Modal, SegmentedControl, Select, Text, TextInput } from "@mantine/core";
-import { IconEdit, IconPlus, IconSearch, IconTrash } from "@tabler/icons-react";
-import { getDoctorDropDown } from "../../Service/DoctorProfileService";
-import { DateTimePicker } from "@mantine/dates";
-import { useForm } from "@mantine/form";
+import { ActionIcon, SegmentedControl, Text, TextInput } from "@mantine/core";
+import { IconEdit, IconSearch, IconTrash } from "@tabler/icons-react";
 import { useSelector } from "react-redux";
-import { cancelAppointment, getAppointmentsByPatient, scheduleAppointment } from "../../Service/AppoitmentService";
-import { errorNotification, successNotification } from "../../Util/NotificationUtil";
-import { modals } from "@mantine/modals";
+import { errorNotification,successNotification } from "../../../Util/NotificationUtil";
 import { Toolbar } from "primereact/toolbar";
-
+import { getAppointmentsByDoctor ,cancelAppointment} from "../../../Service/AppoitmentService";
+import { modals } from "@mantine/modals";
 
 
 interface Appointment {
@@ -36,27 +32,11 @@ interface Appointment {
 
 const Appointments = () => {
   const [selectedAppointments, setSelectedAppointments] = useState<Appointment[]>([]);
-  const [opened, { open, close }] = useDisclosure(false);
-  const [doctor, setDoctors] = useState<{value: string, label: string}[]>([]);
   const [loading, setLoading] = useState(false);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const user = useSelector((state: any) => state.user);
   const [tab,setTab]=useState("Today")
 
-  const form = useForm({
-    initialValues: {
-      doctorId: "",
-      patientId: user.profileId || "",
-      appointmentTime: new Date(),
-      reason: "",
-      notes: "",
-    },
-    validate: {
-      doctorId: (value: any) => (!value ? "Doctor is required" : undefined),
-      reason: (value: any) => (!value ? "Reason is required" : undefined),
-      appointmentTime: (value: any) => (!value ? "Appointment time is required" : undefined),
-    },
-  });
 
   const [filters, setFilters] = useState<DataTableFilterMeta>({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -92,7 +72,7 @@ const Appointments = () => {
 
   useEffect(() => {
     // Fetch appointments
-    getAppointmentsByPatient(user.profileId)
+    getAppointmentsByDoctor(user.profileId)
       .then((data: Appointment[]) => {
         console.log("Appointments data:", data);
         setAppointments(data);
@@ -102,48 +82,8 @@ const Appointments = () => {
         errorNotification("Failed to load appointments");
       });
     
-    // Fetch doctors
-    getDoctorDropDown()
-      .then((data) => {
-        setDoctors(
-          data.map((doctor: any) => ({
-            value: "" + doctor.id,
-            label: doctor.name,
-          }))
-        );
-      })
-      .catch((err) => {
-        console.error("Error fetching doctor", err);
-        errorNotification("Failed to load doctors");
-      });
   }, [user.profileId]);
 
-  const handleSubmit = async (values: typeof form.values) => {
-    setLoading(true);
-    try {
-      const formattedValues = {
-        ...values,
-        appointmentTime: format(values.appointmentTime, "yyyy-MM-dd'T'HH:mm:ss"),
-        patientId: String(values.patientId),
-      };
-      
-      console.log("Form submitted:", formattedValues);
-      await scheduleAppointment(formattedValues);
-      successNotification("Appointment scheduled successfully");
-      
-      // Refresh appointments list
-      const updatedAppointments = await getAppointmentsByPatient(user.profileId);
-      setAppointments(updatedAppointments);
-      
-      close();
-      form.reset();
-    } catch (err: any) {
-      console.error("Appointment schedule unsuccessful:", err);
-      errorNotification(err.response?.data?.errorMessage || "Failed to schedule appointment");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const formatDateTime = (value: string) => {
     try {
@@ -164,9 +104,6 @@ const Appointments = () => {
   const renderHeader = () => {
     return (
       <div className="flex flex-wrap gap-2 justify-between items-center">
-        <Button variant="filled" onClick={open} leftSection={<IconPlus />}>
-          Schedule Appointment
-        </Button>
 
         <TextInput
           leftSection={<IconSearch />}
@@ -263,15 +200,7 @@ const handleDelete = (rowData: Appointment) => {
   };
 
   const header = renderHeader();
- const leftToolbarTemplate = () => {
-        return (
-            <div className="flex flex-wrap gap-2 justify-between items-center">
-        <Button variant="filled" onClick={open} leftSection={<IconPlus />}>
-          Schedule Appointment
-        </Button>
-      </div>
-        );
-    };
+
 
     const rightToolbarTemplate = () => {
         return <TextInput
@@ -306,7 +235,7 @@ const handleDelete = (rowData: Appointment) => {
 
   return (
     <div className="card">
-     <Toolbar className="mb-4" start={leftToolbarTemplate} center={centerToolbarTemplate} end={rightToolbarTemplate}></Toolbar>
+     <Toolbar className="mb-4" start={centerToolbarTemplate} end={rightToolbarTemplate}></Toolbar>
       <DataTable
         value={filterAppointment}
         paginator
@@ -329,11 +258,16 @@ const handleDelete = (rowData: Appointment) => {
       >
       
         <Column
-          field="doctorName"
-          header="Doctor"
+          field="patientName"
+          header="Patient"
           sortable
           filter
-          filterPlaceholder="Search by doctor"
+          filterPlaceholder="Search by patient"
+          style={{ minWidth: "14rem" }}
+        />
+        <Column
+          field="patientPhone"
+          header="Phone No."
           style={{ minWidth: "14rem" }}
         />
         <Column
@@ -381,59 +315,6 @@ const handleDelete = (rowData: Appointment) => {
         />
       </DataTable>
       
-      <Modal
-        opened={opened}
-        onClose={close}
-        title={
-          <div className='text-xl font-semibold text-primary-400'>
-            Schedule appointment
-          </div>
-        }
-        centered
-        size="lg"
-      >
-        <LoadingOverlay visible={loading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
-        <form className="grid grid-cols-1 gap-3" onSubmit={form.onSubmit(handleSubmit)}>
-          <Select
-            {...form.getInputProps("doctorId")}
-            withAsterisk
-            data={doctor}
-            label="Doctor"
-            placeholder="Select Doctor"
-          />
-          <DateTimePicker
-            minDate={new Date()}
-            {...form.getInputProps("appointmentTime")}
-            withAsterisk
-            label="Appointment time"
-            placeholder="Pick date and time"
-            timePickerProps={{
-              withDropdown: true,
-              popoverProps: { withinPortal: false },
-              format: '12h',
-            }}
-          />
-          <TextInput
-            {...form.getInputProps("reason")}
-            withAsterisk
-            label="Reason for Appointment"
-            placeholder="Enter reason for appointment"
-          />
-          <TextInput
-            {...form.getInputProps("notes")}
-            label="Note"
-            placeholder="Additional information (optional)"
-          />
-          <div className="flex gap-3 justify-end mt-4">
-            <Button variant="outline" onClick={close}>
-              Cancel
-            </Button>
-            <Button type="submit" variant="filled">
-              Schedule Appointment
-            </Button>
-          </div>
-        </form>
-      </Modal>
     </div>
   );
 };

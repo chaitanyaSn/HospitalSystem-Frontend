@@ -10,6 +10,8 @@ import PatientProfile from '../Pages/Patient/PatientProfile'
 import AdminDashboard from '../Layout/AdminDashboard'
 import DoctorDashboard from '../Layout/DoctorDashboard'
 import PatientAppointment from '../Pages/Patient/PatientAppointment'
+import Doctorappointment from '../Pages/Doctor/Doctorappointment'
+import DoctorProfile from '../Pages/Doctor/DoctorProfile'
 
 
 const AppRoutes = () => {
@@ -32,9 +34,9 @@ const AppRoutes = () => {
           </Route>
 
           <Route path='/doctor' element={<ProtectedRoute><DoctorDashboard /></ProtectedRoute>}>
-          <Route path="profile" element={<PatientProfile />} />
+          <Route path="profile" element={<DoctorProfile />} />
           <Route path="dashboard" element={<Dashboard />} />
-          <Route path="appointment" element={<Dashboard />} />
+          <Route path="appointment" element={<Doctorappointment />} />
           <Route path="book" element={<Dashboard />} />
           </Route>
 
